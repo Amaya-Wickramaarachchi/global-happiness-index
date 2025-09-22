@@ -1,0 +1,25 @@
+{
+  "name": "global-happiness-index",
+  "version": "1.0.0",
+  "description": "Global Happiness & Wellbeing Index - A web application to discover the world's most liveable cities",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "cd server && npm start",
+    "build": "echo 'Build completed - static files ready for deployment'",
+    "dev": "cd server && npm start",
+    "install-deps": "cd server && npm install"
+  },
+  "keywords": [
+    "happiness",
+    "wellbeing",
+    "cities",
+    "quality-of-life",
+    "air-quality",
+    "weather"
+  ],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const Joi = require('joi');
+const mongoose = require('mongoose');
 const Record = require('../models/Record');
 const router = express.Router();
 
@@ -467,6 +468,77 @@ router.get('/records', [validateApiKey, requireAuth], async (req, res) => {
 router.get('/leaderboard', validateApiKey, async (req, res) => {
     try {
         const { limit = 20, minRecords = 1 } = req.query;
+        
+        // Check if MongoDB is available
+        if (mongoose.connection.readyState !== 1) {
+            // Return mock data when database is not available
+            console.log('📋 Returning mock leaderboard data (no database connection)');
+            const mockLeaderboard = [
+                {
+                    city: 'Reykjavik',
+                    country: 'Iceland',
+                    wellbeingScore: 95.2,
+                    airQualityScore: 98.0,
+                    temperatureScore: 85.0,
+                    populationScore: 99.5,
+                    recordCount: 12,
+                    population: 131136,
+                    lastUpdated: new Date()
+                },
+                {
+                    city: 'Zurich',
+                    country: 'Switzerland',
+                    wellbeingScore: 92.8,
+                    airQualityScore: 92.0,
+                    temperatureScore: 88.0,
+                    populationScore: 91.0,
+                    recordCount: 18,
+                    population: 421878,
+                    lastUpdated: new Date()
+                },
+                {
+                    city: 'Copenhagen',
+                    country: 'Denmark',
+                    wellbeingScore: 91.5,
+                    airQualityScore: 89.0,
+                    temperatureScore: 82.0,
+                    populationScore: 93.5,
+                    recordCount: 15,
+                    population: 644431,
+                    lastUpdated: new Date()
+                },
+                {
+                    city: 'Helsinki',
+                    country: 'Finland',
+                    wellbeingScore: 90.3,
+                    airQualityScore: 95.0,
+                    temperatureScore: 78.0,
+                    populationScore: 95.0,
+                    recordCount: 9,
+                    population: 656920,
+                    lastUpdated: new Date()
+                },
+                {
+                    city: 'Vienna',
+                    country: 'Austria',
+                    wellbeingScore: 89.7,
+                    airQualityScore: 87.0,
+                    temperatureScore: 85.0,
+                    populationScore: 88.5,
+                    recordCount: 22,
+                    population: 1911191,
+                    lastUpdated: new Date()
+                }
+            ];
+            
+            return res.json({ 
+                leaderboard: mockLeaderboard.slice(0, parseInt(limit)),
+                total: mockLeaderboard.length,
+                generatedAt: new Date(),
+                mock: true,
+                message: 'This is demo data - database not available'
+            });
+        }
         
         // Aggregate data to get average scores by city
         const leaderboard = await Record.aggregate([
