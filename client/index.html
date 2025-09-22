@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Happiness & Wellbeing Index</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">🌍 Global Wellbeing Index</h1>
+                <nav class="nav">
+                    <div id="auth-section">
+                        <div id="login-section" style="display: none;">
+                            <a href="/auth/google" class="btn btn-primary">Login with Google</a>
+                        </div>
+                        <div id="user-section" style="display: none;">
+                            <span id="user-name" class="user-name"></span>
+                            <a href="/auth/logout" class="btn btn-secondary">Logout</a>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="hero">
+                <h2>Discover the World's Most Liveable Cities</h2>
+                <p>Find your perfect destination based on air quality, weather comfort, and population density</p>
+            </section>
+
+            <!-- Search Section -->
+            <section class="search-section">
+                <div class="search-container">
+                    <div class="search-box">
+                        <input 
+                            type="text" 
+                            id="city-search" 
+                            placeholder="Search for a city..."
+                            autocomplete="off"
+                        >
+                        <button id="search-btn" class="search-btn">
+                            🔍 Search
+                        </button>
+                    </div>
+                    <div id="search-suggestions" class="suggestions" style="display: none;"></div>
+                </div>
+            </section>
+
+            <!-- Loading Section -->
+            <section id="loading-section" class="loading" style="display: none;">
+                <div class="loading-spinner"></div>
+                <p>Gathering data from multiple sources...</p>
+            </section>
+
+            <!-- Results Section -->
+            <section id="results-section" class="results" style="display: none;">
+                <div class="result-header">
+                    <h3 id="result-city-name"></h3>
+                    <button id="save-btn" class="btn btn-success" style="display: none;">
+                        💾 Save to My Records
+                    </button>
+                </div>
+
+                <div class="metrics-grid">
+                    <!-- Wellbeing Score Card -->
+                    <div class="metric-card main-score">
+                        <h4>Overall Wellbeing Score</h4>
+                        <div class="score-display">
+                            <div class="score-circle">
+                                <span id="wellbeing-score">--</span>
+                            </div>
+                            <div class="score-grade">
+                                <span id="score-grade">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Air Quality Card -->
+                    <div class="metric-card">
+                        <h4>🌬️ Air Quality</h4>
+                        <div class="metric-value">
+                            <span id="air-score" class="score">--</span>
+                            <span class="weight">(40%)</span>
+                        </div>
+                        <div class="metric-details">
+                            <div class="detail-item">
+                                <span>PM2.5:</span>
+                                <span id="pm25-value">-- μg/m³</span>
+                            </div>
+                            <div class="detail-item">
+                                <span>PM10:</span>
+                                <span id="pm10-value">-- μg/m³</span>
+                            </div>
+                            <div class="detail-item">
+                                <span>Source:</span>
+                                <span id="air-source">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Weather Card -->
+                    <div class="metric-card">
+                        <h4>🌡️ Weather Comfort</h4>
+                        <div class="metric-value">
+                            <span id="temp-score" class="score">--</span>
+                            <span class="weight">(30%)</span>
+                        </div>
+                        <div class="metric-details">
+                            <div class="detail-item">
+                                <span>Temperature:</span>
+                                <span id="temperature-value">--°C</span>
+                            </div>
+                            <div class="detail-item">
+                                <span>Humidity:</span>
+                                <span id="humidity-value">--%</span>
+                            </div>
+                            <div class="detail-item">
+                                <span>Conditions:</span>
+                                <span id="weather-desc">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Population Card -->
+                    <div class="metric-card">
+                        <h4>👥 Population Density</h4>
+                        <div class="metric-value">
+                            <span id="pop-score" class="score">--</span>
+                            <span class="weight">(30%)</span>
+                        </div>
+                        <div class="metric-details">
+                            <div class="detail-item">
+                                <span>Population:</span>
+                                <span id="population-value">--</span>
+                            </div>
+                            <div class="detail-item">
+                                <span>Density:</span>
+                                <span id="density-value">-- /km²</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart Section -->
+                <div class="chart-section">
+                    <h4>Score Breakdown</h4>
+                    <div class="chart-container">
+                        <canvas id="score-chart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- My Records Section -->
+            <section id="records-section" class="records" style="display: none;">
+                <div class="section-header">
+                    <h3>My Saved Records</h3>
+                    <button id="toggle-records-btn" class="btn btn-outline">View My Records</button>
+                </div>
+                <div id="records-list" class="records-list" style="display: none;">
+                    <!-- Records will be populated here -->
+                </div>
+            </section>
+
+            <!-- Leaderboard Section -->
+            <section class="leaderboard">
+                <div class="section-header">
+                    <h3>🏆 Top Cities Worldwide</h3>
+                    <button id="refresh-leaderboard" class="btn btn-outline">Refresh</button>
+                </div>
+                <div id="leaderboard-list" class="leaderboard-list">
+                    <!-- Leaderboard will be populated here -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Global Wellbeing Index | Data from GeoDB, OpenAQ, and OpenWeatherMap</p>
+        </div>
+    </footer>
+
+    <!-- Error Modal -->
+    <div id="error-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Error</h3>
+            <p id="error-message"></p>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="modal" style="display: none;">
+        <div class="modal-content success">
+            <span class="close">&times;</span>
+            <h3>Success!</h3>
+            <p id="success-message"></p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
